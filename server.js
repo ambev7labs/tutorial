@@ -18,6 +18,9 @@ app.get('/',function (req,res){
 
 app.post('/create',userController.create);
 app.get('/list',userController.findAll);
+app.get('/user/:area',userController.findByArea);
+app.put('/update/:userId',userController.update);
+app.delete('/delete/:userId',userController.delete);
 
 app.listen(3000,()=>{
     console.log('rodando');

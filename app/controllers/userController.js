@@ -1,6 +1,12 @@
 const db = require("../models");
 const User = db.users;
-const Op = db.Sequelize.Op;
+
+/*
+create = post
+destroy = delete
+findAll = get
+*/
+
 
 module.exports = {
     async create(req, res) {
@@ -31,7 +37,7 @@ module.exports = {
             }).catch(err => {
                 res.status(500).send({
                     message:
-                        err.message || "Some error occurred while retrieving tutorials."
+                        err.message
                 });
             });
         }
@@ -41,16 +47,82 @@ module.exports = {
             })
         }
     },
-    findOne(req, res) {
-
+    async findByArea(req, res) {
+        const area = req.params.area;
+        try {
+            await User.findAll({where: {area: area}}).then(data => {
+                res.send(data);
+            }).catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message
+                });
+            });
+        }
+        catch (err) {
+            res.status(500).send({
+                msg: "erro"
+            })
+        }
     },
-    update(req, res) {
-
+    async update(req, res) {
+        try {
+            const userId = req.params.userId;
+            await User.update(req.body, { where: { id: userId } }).then(num => {
+                if (num == 1) {
+                    res.send({
+                        message: "Usuário excluido!"
+                    });
+                } else {
+                    res.send({
+                        message: "Usuário nao encontrado"
+                    });
+                }
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                msg: "erro"
+            })
+        }
     },
-    delete(req, res) {
-
+    async delete(req, res) {
+        const userId = req.params.userId;
+        try {
+            await User.destroy({ where: { id: userId } }).then(num => {
+                if (num == 1) {
+                    res.send({
+                        message: "Usuário excluido!"
+                    });
+                } else {
+                    res.send({
+                        message: "Usuário nao encontrado"
+                    });
+                }
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                msg: "erro"
+            })
+        }
     },
-    deleteAll(req, res) {
-
+    async findById(req, res) {
+        try {
+            const {id} = req.params.id;
+            await User.findByPk(id).then(data => {
+                res.send(data);
+            }).catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message
+                });
+            });
+        }
+        catch (err) {
+            res.status(500).send({
+                msg: "erro"
+            })
+        }
     }
 }
